@@ -57,16 +57,27 @@ public class settlementServlet extends HttpServlet {
                     msg = "支付失败！库存不足。";
                 }else
                 {   // 2. 添加明细
-                    if(SettlementImpl.add(new Object[]{username, imgid}) < 0)
+//                    if(SettlementImpl.add(new Object[]{username, imgid}) < 0)
+//                    {
+//                        msg = "支付失败！代码出现错误";
+//                    }else
+//                    {   // 3. 更新数据库中的库存
+//                        String update_sql = "UPDATE COMMODITY SET inventory = inventory - 1 WHERE imgid = ? AND inventory > 0";
+//                        if( DBUtil.executeUpdate(DBUtil.getConnection(), update_sql, new Object[]{imgid}) < 0 )
+//                        {
+//                            msg = "支付失败！代码出现错误";
+//                        }
+//                    }
+                    int update_r = DBUtil.execute_procedure(username, imgid);
+                    if( update_r >= 0 )
+                    {
+                        if( update_r == 0)
+                        {
+                            msg = "支付失败！库存不足";
+                        }
+                    }else
                     {
                         msg = "支付失败！代码出现错误";
-                    }else
-                    {   // 3. 更新数据库中的库存
-                        String update_sql = "UPDATE COMMODITY SET inventory = inventory - 1 WHERE imgid = ? AND inventory > 0";
-                        if( DBUtil.executeUpdate(DBUtil.getConnection(), update_sql, new Object[]{imgid}) < 0 )
-                        {
-                            msg = "支付失败！代码出现错误";
-                        }
                     }
                 }
 

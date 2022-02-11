@@ -83,4 +83,22 @@ public class DBUtil {
         }
         return ps.executeQuery();
     }
+
+    public static int execute_procedure(String username, int img_id) throws SQLException, ClassNotFoundException {
+        int res = -3;
+        Connection conn = getConnection();
+        try( CallableStatement clbStmt = conn.prepareCall("{CALL settlement_procedure(?,?,?,?)}") )
+        {
+            // 设置输入参数
+            clbStmt.setString(1, username);
+            clbStmt.setInt(2, img_id);
+            // 注册输出参数
+            clbStmt.registerOutParameter(3, Types.INTEGER);
+            clbStmt.registerOutParameter(4, Types.INTEGER);
+            clbStmt.executeQuery();
+//            int insert_result = clbStmt.getInt(3);
+            res = clbStmt.getInt(4);
+        }
+        return res;
+    }
 }
