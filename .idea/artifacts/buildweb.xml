@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="buildweb">
+    <output-path>$PROJECT_DIR$/out/artifacts/buildweb</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="commodity_settlement_system" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="commodity_settlement_system/web/Web" />
+    </root>
+  </artifact>
+</component>
