@@ -84,6 +84,11 @@ public class DBUtil {
         return ps.executeQuery();
     }
 
+    /**
+     * 执行sql的 call procedure 语句
+     * username: 用户名
+     * img_id: 商品id
+     * */
     public static int execute_procedure(String username, int img_id) throws SQLException, ClassNotFoundException {
         int res = -3;
         Connection conn = getConnection();
