@@ -14,7 +14,7 @@
 </head>
 <body>
 <main>
-    <form onsubmit="checkPayword()">
+    <form action="#" id="submitted" method="post">
         <div class="pay">
             <div class="content" id="content">
                 <div class="tab">请输入支付密码：</div>
@@ -26,7 +26,7 @@
                 <input type="password" maxlength="1" name="pay">
             </div>
             <div class="point">请填写六位密码</div>
-            <input type="button" value="支付" onclick="this.form.onsubmit()">
+            <input type="button" value="支付" onclick="checkPayword()">
         </div>
     </form>
 </main>
@@ -55,10 +55,8 @@
             // console.log(username)
             var exp = new Date()
             exp.setTime(exp.getTime() + 1000)
-            document.cookie = "username=" + username + ";expires=" + exp.toUTCString()
-            document.cookie = "imgid=" + imgid + ";expires=" + exp.toUTCString()
-            document.cookie = "password=" + passwordstr + ";expires=" + exp.toUTCString()
-            location.href='settlementServlet';
+            document.getElementById("submitted").action = "settlementServlet?username=" + username + "&img_id=" + imgid + "&password=" + passwordstr
+            document.getElementById("submitted").submit()
         }
     }
 </script>

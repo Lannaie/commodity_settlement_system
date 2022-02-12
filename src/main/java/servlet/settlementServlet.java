@@ -26,27 +26,10 @@ public class settlementServlet extends HttpServlet {
         resp.setContentType("text/html;charset=UTF-8");
         resp.setCharacterEncoding("UTF-8");
         // 获取参数
-        String username = "";
-        String payword = "";
-        int imgid = -1;
-        Cookie[] cookies = req.getCookies();
+        String username = req.getParameter("username");
+        String payword = req.getParameter("password");
+        int imgid = Integer.parseInt(req.getParameter("img_id"));
 
-        if( cookies != null )
-        {
-            for( Cookie cookie : cookies )
-            {
-                if( cookie.getName().equals("username") )
-                {
-                    username = cookie.getValue();
-                }else if( cookie.getName().equals("password") )
-                {
-                    payword = cookie.getValue();
-                }else if( cookie.getName().equals("imgid") )
-                {
-                    imgid = Integer.valueOf(cookie.getValue());
-                }
-            }
-        }
         // 对比密码
         try {
             if(UserImpl.findUser(username, payword, 1)){

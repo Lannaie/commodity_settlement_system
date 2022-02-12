@@ -18,7 +18,7 @@
         <div class="modal">
             <div class="tab"> 注册 </div>
             <div class="content">
-                <form action="" method="post" onsubmit="checkPassword()">
+                <form action="" method="post" id="submitted">
                     <div class="input_field">
                         <input id="username" type="text" required="required" placeholder="用户名">
                     </div>
@@ -35,8 +35,7 @@
                         <input type="password" required="required" id="payword2" placeholder="请重新输入支付密码">
                     </div>
                     <div class="input_field">
-<%--                        <input type="submit" value="注册">--%>
-                        <input type="button" value="注册" onclick="this.form.onsubmit()">
+                        <input type="button" value="注册" onclick="checkPassword()">
                     </div>
                     <div class="input_field">
                         <a href="login.jsp">已有账号？去登录</a>
@@ -70,12 +69,8 @@
 
             var exp = new Date()
             exp.setTime(exp.getTime() + 1000)
-            document.cookie = "username=" + username + ";expires=" + exp.toUTCString()
-            document.cookie = "password=" + password + ";expires=" + exp.toUTCString()
-            document.cookie = "payword=" + payword + ";expires=" + exp.toUTCString()
-
-            // console.log(username + " " + password + " " + payword)
-            location.href = 'registerServlet'
+            document.getElementById("submitted").action = "registerServlet?username=" + username + "&password=" + password + "&pay_word=" + payword
+            document.getElementById("submitted").submit()
         }
     }
 </script>
