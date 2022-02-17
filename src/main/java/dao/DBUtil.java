@@ -91,8 +91,7 @@ public class DBUtil {
      * */
     public static int execute_procedure(String username, int img_id) throws SQLException, ClassNotFoundException {
         int res = -3;
-        Connection conn = getConnection();
-        try( CallableStatement clbStmt = conn.prepareCall("{CALL settlement_procedure(?,?,?,?)}") )
+        try( Connection conn = getConnection(); CallableStatement clbStmt = conn.prepareCall("{CALL settlement_procedure(?,?,?,?)}") )
         {
             // 设置输入参数
             clbStmt.setString(1, username);

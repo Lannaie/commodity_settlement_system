@@ -1,6 +1,7 @@
 package servlet;
 
 import dao.DBUtil;
+import dao.JedisUtil;
 import entity.Settlement;
 import impl.CommodityImpl;
 import impl.SettlementImpl;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -28,40 +30,53 @@ public class settlementServlet extends HttpServlet {
         // 获取参数
         String username = req.getParameter("username");
         String payword = req.getParameter("password");
-        int imgid = Integer.parseInt(req.getParameter("img_id"));
+//        int imgid = Integer.parseInt(req.getParameter("img_id"));
+        String img_id = req.getParameter("img_id");
+        int imgid = img_id == null ? -1 : Integer.parseInt(img_id);
 
         // 对比密码
         try {
             if(UserImpl.findUser(username, payword, 1)){
                 String msg = "支付成功！请点击确定按钮回到商品页面。";
                 // 1. 判断库存是否为0
-                if( new CommodityImpl().getInventory(imgid) <= 0 )
+//                if( new CommodityImpl().getInventory(imgid) <= 0 )
+                JedisUtil ju = new JedisUtil();
+                if( ju.getValue(img_id) <= 0 )
                 {
                     msg = "支付失败！库存不足。";
                 }else
                 {   // 2. 添加明细
-//                    if(SettlementImpl.add(new Object[]{username, imgid}) < 0)
-//                    {
-//                        msg = "支付失败！代码出现错误";
-//                    }else
-//                    {   // 3. 更新数据库中的库存
-//                        String update_sql = "UPDATE COMMODITY SET inventory = inventory - 1 WHERE imgid = ? AND inventory > 0";
-//                        if( DBUtil.executeUpdate(DBUtil.getConnection(), update_sql, new Object[]{imgid}) < 0 )
-//                        {
-//                            msg = "支付失败！代码出现错误";
-//                        }
-//                    }
-                    int update_r = DBUtil.execute_procedure(username, imgid);
-                    if( update_r >= 0 )
-                    {
-                        if( update_r == 0)
-                        {
-                            msg = "支付失败！库存不足";
-                        }
-                    }else
+                    if(SettlementImpl.add(new Object[]{username, imgid}) < 0)
                     {
                         msg = "支付失败！代码出现错误";
+                    }else
+                    {   // 3. 更新数据库中的库存
+                        String update_sql = "UPDATE COMMODITY SET inventory = inventory - 1 WHERE imgid = ? AND inventory > 0";
+                        try(Connection conn = DBUtil.getConnection())
+                        {
+                            if( DBUtil.executeUpdate(conn, update_sql, new Object[]{imgid}) < 0 )
+                            {
+                                conn.rollback();
+                                msg = "支付失败！代码出现错误";
+                            }else
+                            {
+                                ju.decrValue(img_id);
+                            }
+                        }
                     }
+
+//                    存储过程的使用实际上没有生成正面影响
+//                    int update_r = DBUtil.execute_procedure(username, imgid);
+//                    if( update_r >= 0 )
+//                    {
+//                        if( update_r == 0)
+//                        {
+//                            msg = "支付失败！库存不足";
+//                        }
+//                    }else
+//                    {
+//                        msg = "支付失败！代码出现错误";
+//                    }
                 }
 
                 // 返回成功通知
