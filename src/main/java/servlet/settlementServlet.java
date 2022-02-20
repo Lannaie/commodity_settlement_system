@@ -39,9 +39,9 @@ public class settlementServlet extends HttpServlet {
             if(UserImpl.findUser(username, payword, 1)){
                 String msg = "支付成功！请点击确定按钮回到商品页面。";
                 // 1. 判断库存是否为0
-//                if( new CommodityImpl().getInventory(imgid) <= 0 )
-                JedisUtil ju = new JedisUtil();
-                if( ju.getValue(img_id) <= 0 )
+                if( new CommodityImpl().getInventory(imgid) <= 0 )
+//                JedisUtil ju = new JedisUtil();
+//                if( ju.getValue(img_id) <= 0 )
                 {
                     msg = "支付失败！库存不足。";
                 }else
@@ -58,10 +58,11 @@ public class settlementServlet extends HttpServlet {
                             {
                                 conn.rollback();
                                 msg = "支付失败！代码出现错误";
-                            }else
-                            {
-                                ju.decrValue(img_id);
                             }
+//                            else
+//                            {
+//                                ju.decrValue(img_id);
+//                            }
                         }
                     }
 

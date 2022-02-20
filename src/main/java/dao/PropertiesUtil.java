@@ -8,10 +8,11 @@ import java.util.Properties;
  * created by Bonnie on 2022/2/7
  */
 public class PropertiesUtil {
-    private Properties properties;
-    private InputStream inputStream;
+    private static Properties properties;
+    private static InputStream inputStream;
+    private static String filename = "props.properties";
 
-    public Properties getProperties( String filename ) throws IOException {
+    public static Properties getProperties() throws IOException {
         properties = new Properties();
         // 加载配置文件到输入流
         inputStream = PropertiesUtil.class.getClassLoader().getResourceAsStream(filename);

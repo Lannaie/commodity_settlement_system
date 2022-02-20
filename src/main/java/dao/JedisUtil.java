@@ -3,29 +3,30 @@ package dao;
 
 import redis.clients.jedis.*;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * created by Bonnie on 2022/2/17
  */
 public class JedisUtil {
     // JedisPool
-    JedisCommands jedisCommands;
-    JedisPool jedisPool;
-    JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-    String ip = "192.168.186.100";
-    int port = 6379;
-    int timeout = 2000;
-    String auth = "niit1234";
+    private JedisCommands jedisCommands;
+    private JedisPool jedisPool;
+    private JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+    private String ip;
+    private int port;
+    private int timeout;
+    private String auth;
     // 数据格式
     private String TABLE = "commodity:inventory";
     private String PREFIX_KEY = "imgid:";
 
-    public JedisUtil()
-    {
+    public JedisUtil() throws IOException {
         // 初始化Jedis
         // 设置配置
         jedisPoolConfig.setMaxTotal(1024);
@@ -33,6 +34,12 @@ public class JedisUtil {
         jedisPoolConfig.setMaxWaitMillis(100);
         jedisPoolConfig.setTestOnBorrow(false);//jedis 第一次启动时，会报错
         jedisPoolConfig.setTestOnReturn(true);
+        // 取初始化的ip、port、timeout、auth
+        Properties prop = PropertiesUtil.getProperties();
+        ip = prop.getProperty("ip");
+        port = Integer.parseInt(prop.getProperty("port"));
+        timeout = Integer.parseInt(prop.getProperty("timeout"));
+        auth = prop.getProperty("auth");
         // 初始化JedisPool
         jedisPool = new JedisPool(jedisPoolConfig, ip, port, timeout, auth);
         // 获取一个jedis

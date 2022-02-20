@@ -25,7 +25,7 @@ public class DBUtil {
     }
 
     public static void init() throws IOException {
-        Properties pro = new PropertiesUtil().getProperties("jdbc.properties");
+        Properties pro = PropertiesUtil.getProperties();
         // 获取指定参数
         driver = pro.getProperty("driver");
         url = pro.getProperty("url");
